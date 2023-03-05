@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmedik-deployment
+  labels:
+    app: bookmedik
+    type: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookmedik
+      type: frontend
+  template:
+    metadata:
+      labels:
+        app: bookmedik
+        type: frontend
+    spec:
+      volumes:
+        - name: bookmedik-pvc
+          persistentVolumeClaim:
+            claimName: bookmedik-pvc
+      containers:
+        - name: contenedor-bookmedik
+          image: evanticks/bookmedik:v1_3
+#          volumeMounts:
+#            - mountPath: /var/www/html/
+#              name: bookmedik-pvc
+          ports:
+            - containerPort: 80
+              name: http-port
+          env:
+            - name: USUARIO_BOOKMEDIK
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_user
+            - name: NOMBRE_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_dbname
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_host
+            - name: CONTRA_BOOKMEDIK
+              valueFrom:
+                secretKeyRef:
+                  name: bd-passwords
+                  key: bd_password

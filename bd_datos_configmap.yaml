@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  bd_dbname: bookmedik
+  bd_host: mariadb-service
+  bd_user: bookmedik
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: bd-datos
